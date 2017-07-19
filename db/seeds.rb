@@ -84,3 +84,4 @@ photo_info.each do |photo_hash|
 end
 
 puts "There are now #{Photo.count} photos in the database."
+AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password')
