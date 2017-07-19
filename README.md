@@ -71,7 +71,7 @@ Then, we can write controller logic to put the right info into the instance vari
 
 Then, we'll be done!
 
-(Hint: As you are clicking around the target and trying to identify all of the URLs that we'll have to build support for, remember from [omnicalc_params](https://omnicalc-params.herokuapp.com/) that every form requires to RCAVs: one to display the form, and one to process the inputs after the user clicks submit.)
+(Hint: As you are clicking around the target and trying to identify all of the URLs that we'll have to build support for, remember from [omnicalc_params](https://omnicalc-params.herokuapp.com/) that every form requires two RCAVs: one to display the form, and one to process the inputs after the user clicks submit.)
 
 Once you've written down your guess at all of the routes, compare them with your neighbor.
 
@@ -102,37 +102,36 @@ Now that we've identified the entire interface of the application, we can get st
 
 ## Setup
 
- 1. Fork this repository.
- 1. Clone your fork.
- 1. `cd` in to the application's root folder.
- 1. `bundle install`
- 1. `rails server`
- 1. Open up the code in Atom.
+ 1. Ensure that you've forked this repo to your own GitHub account.
+ 1. Set up [a Cloud9 workspace as usual](https://guides.firstdraft.com/getting-started-with-cloud-9.html) based on this repo.
+ 1. `bin/setup`
+ 1. Run Project
+ 1. Navigate to the live app in Chrome.
 
 ## Generate the database table
 
 (Your [CRUD with Ruby guide](https://guides.firstdraft.com/crud-with-ruby.html) will be handy for all CRUD-related portions of this project.)
 
-First, we need an underlying database table to store photos. Lets use a Rails generator to help us write the code to get one:
+First, we need an underlying database table to store photos. In this project, I've already done this step for you, but in future projects you would have to do something like the following:
 
 ```bash
 rails generate model photo caption:text source:string
 ```
 
-This is a command line command, not a Ruby expression, so don't attempt to execute it within `rails console`. Run it at a command prompt.
+This is a command line command, not a Ruby expression, so don't attempt to execute it within `rails console`. Run it at a regular Terminal prompt.
 
 This command will generate two files:
 
  - A migration file that contains a Ruby script that, when executed, will create a table called "photos" with two columns in it; "caption" and "source".
  - A Ruby class called `Photo` that will represent this table so that we can interact with it easily.
 
-Execute the migration with:
+You would then the migration with:
 
 ```bash
 rails db:migrate
 ```
 
-You now have a database table!
+You would then have a database table!
 
 ### Add some data manually
 
@@ -201,10 +200,10 @@ Our first goal will be to allow users to READ photos -- individual details, and 
 
 We'll eventually want links on the index page that lead to the details page of each photo that look like:
 
- - [http://localhost:3000/photos/1](http://localhost:3000/photos/1)
- - [http://localhost:3000/photos/2](http://localhost:3000/photos/2)
- - [http://localhost:3000/photos/3](http://localhost:3000/photos/3)
- - [http://localhost:3000/photos/4](http://localhost:3000/photos/4)
+ - [/photos/1](/photos/1)
+ - [/photos/2](/photos/2)
+ - [/photos/3](/photos/3)
+ - [/photos/4](/photos/4)
 
 Hints: Remember your [CRUD with Ruby guide](https://guides.firstdraft.com/crud-with-ruby.html), and what you know about the `params` hash.
 
@@ -279,7 +278,7 @@ We need a way to pick a different URL to send the data to when the user clicks t
 Fortunately, we can very easily pick which URL receives the data from a form: it is determined by adding an `action` attribute to the `<form>` tag, like so:
 
 ```html
-<form action="http://localhost:3000/create_photo">
+<form action="/create_photo">
 ```
 
 Think of the action attribute as being like the `href` attribute of the `<a>` tag. It determines where the user is sent after they click. The only difference between a form and a link is that when the user clicks a form, some extra data comes along for the ride, but either way, the user is sent to a new URL.
@@ -305,7 +304,7 @@ If the former, simply add whatever HTML to the view template you think is approp
 If you instead just want to send the user back to the index page immediately, try the following in the action instead of `render`:
 
 ```ruby
-redirect_to("http://localhost:3000/photos")
+redirect_to("/photos")
 ```
 
 or just
@@ -335,7 +334,7 @@ When I click that link, the photo should be removed and I should be sent back to
 Under each photo on the index page, there is a link labeled "Edit". The markup for these links should look like:
 
 ```html
-<a href="http://localhost:3000/photos/<%= photo.id %>/edit">Edit</a>
+<a href="/photos/<%= photo.id %>/edit">Edit</a>
 ```
 
 The job of this action should be to display a form to edit an existing photo, somewhat like the `new_form` action.
@@ -351,13 +350,13 @@ Hint: You can pre-fill an `<input>` with the `value=""` attribute; e.g.,
 The `action` attributes of your edit forms should look like this:
 
 ```html
-<form action="http://localhost:3000/update_photo/4">
+<form action="/update_photo/4">
 ```
 
 so that when the user clicks submit, we can finally do the work of updating our database. But the `4` should be dynamic, not hardcoded, so embed some Ruby instead:
 
 ```html
-<form action="http://localhost:3000/update_photo/<%= @photo.id %>">
+<form action="/update_photo/<%= @photo.id %>">
 ```
 
 #### update_row
